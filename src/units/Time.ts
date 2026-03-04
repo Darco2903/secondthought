@@ -126,6 +126,30 @@ export abstract class Time {
     }
 
     /**
+     * Rounds the time value to the nearest integer.
+     */
+    public round(): this {
+        this._time = Math.round(this._time);
+        return this;
+    }
+
+    /**
+     * Rounds the time value down to the nearest integer.
+     */
+    public floor(): this {
+        this._time = Math.floor(this._time);
+        return this;
+    }
+
+    /**
+     * Rounds the time value up to the nearest integer.
+     */
+    public ceil(): this {
+        this._time = Math.ceil(this._time);
+        return this;
+    }
+
+    /**
      * Subtracts the other time from this time, converting it to the same unit if necessary.
      * @param other The time to subtract from this time.
      */

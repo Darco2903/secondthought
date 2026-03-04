@@ -100,6 +100,43 @@ describe("Subtract", () => {
 });
 
 //////////////////////////
+// Round, Floor, and Ceil
+
+describe("Round, Floor, and Ceil", () => {
+    it("should round a time to the nearest integer", () => {
+        const time = new Second(30.5); // 30.5 seconds
+        const result = time.round();
+        expect(time).toBe(result); // round should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(31); // 30.5s rounded to the nearest second is 31s
+    });
+
+    it("should round a time to the nearest integer", () => {
+        const time = new Second(30.2); // 30.2 seconds
+        const result = time.round();
+        expect(time).toBe(result); // round should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(30); // 30.2s rounded to the nearest second is 30s
+    });
+
+    it("should floor a time down to the nearest integer", () => {
+        const time = new Second(30.5); // 30.5 seconds
+        const result = time.floor();
+        expect(time).toBe(result); // floor should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(30); // 30.5s rounded down to the nearest second is 30s
+    });
+
+    it("should ceil a time up to the nearest integer", () => {
+        const time = new Second(30.5); // 30.5 seconds
+        const result = time.ceil();
+        expect(time).toBe(result); // ceil should modify the original instance
+        expect(result).toBeInstanceOf(Second);
+        expect(result.time).toBe(31); // 30.5s rounded up to the nearest second is 31s
+    });
+});
+
+//////////////////////////
 // Abs
 
 describe("Abs", () => {
