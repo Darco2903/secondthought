@@ -84,6 +84,13 @@ export abstract class Time {
     public abstract toWeek(): Week;
 
     /**
+     * Returns a new Date object representing the same time as this time, converted to milliseconds.
+     */
+    public toDate(): Date {
+        return new Date(this.toMillisecond().time);
+    }
+
+    /**
      * Converts this time to the same unit as the other time and returns it.
      */
     public toLike(other: Nanosecond): Nanosecond;

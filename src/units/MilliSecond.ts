@@ -19,6 +19,10 @@ export class Millisecond extends Time {
         return new Millisecond(Date.now());
     }
 
+    static fromDate(date: Date): Millisecond {
+        return new Millisecond(date.getTime());
+    }
+
     clone(): Millisecond {
         return new Millisecond(this.time);
     }
