@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Hour, Millisecond, Second, type Time } from "../../src";
+import { Millisecond, type Time } from "../../src";
 
 //////////////////////////
 // General
@@ -13,7 +13,7 @@ async function wait(time: Time): Promise<void> {
 }
 
 describe("General", () => {
-    it("should return a new instance of the same time unit with the same time value", async () => {
+    it("should wait for the specified time", async () => {
         const timeout = new Millisecond(200);
         const start = Millisecond.now();
         await wait(timeout);

@@ -1,5 +1,31 @@
 import { describe, it, expect } from "vitest";
-import { Hour, Millisecond, Second } from "../../src";
+import { Hour, Millisecond, Minute, Second, Time } from "../../src";
+
+//////////////////////////
+// isZero, isPositive, isNegative
+
+describe("isZero, isPositive, isNegative", () => {
+    it("should return true for isZero if the time value is zero", () => {
+        const time = new Second(0); // 0 seconds
+        expect(time.isZero).toBe(true);
+        expect(time.isPositive).toBe(false);
+        expect(time.isNegative).toBe(false);
+    });
+
+    it("should return true for isPositive if the time value is positive", () => {
+        const time = new Second(30); // 30 seconds
+        expect(time.isZero).toBe(false);
+        expect(time.isPositive).toBe(true);
+        expect(time.isNegative).toBe(false);
+    });
+
+    it("should return true for isNegative if the time value is negative", () => {
+        const time = new Second(-30); // -30 seconds
+        expect(time.isZero).toBe(false);
+        expect(time.isPositive).toBe(false);
+        expect(time.isNegative).toBe(true);
+    });
+});
 
 //////////////////////////
 // Clone
@@ -68,13 +94,13 @@ describe("Add", () => {
 });
 
 //////////////////////////
-// Subtract
+// Sub
 
-describe("Subtract", () => {
+describe("Sub", () => {
     it("should subtract two times and return the correct result", () => {
         const time1 = new Second(60); // 60 seconds
         const time2 = new Second(30); // 30 seconds
-        const result = time1.subtract(time2); // Convert total time to seconds
+        const result = time1.sub(time2); // Convert total time to seconds
         expect(time1).toBe(result); // subtract should modify the original instance
         expect(result).toBeInstanceOf(Second); // Result should be a Second instance
         expect(result.time).toBe(30); // 60s - 30s = 30s
@@ -83,7 +109,7 @@ describe("Subtract", () => {
     it("should subtract two times with different units and return the correct result", () => {
         const time1 = new Hour(1); // 1 hour
         const time2 = new Second(30); // 30 seconds
-        const result = time1.subtract(time2); // Convert total time to seconds
+        const result = time1.sub(time2); // Convert total time to seconds
         expect(time1).toBe(result); // subtract should modify the original instance
         expect(result).toBeInstanceOf(Hour); // Result should be a Hour instance
         expect(result.toSecond().time).toBe(3570); // 3600s - 30s = 3570s
@@ -92,7 +118,7 @@ describe("Subtract", () => {
     it("should subtract two times with negative values and return the correct result", () => {
         const time1 = new Second(30); // 30 seconds
         const time2 = new Second(-60); // -60 seconds
-        const result = time1.subtract(time2);
+        const result = time1.sub(time2);
         expect(time1).toBe(result); // subtract should modify the original instance
         expect(result).toBeInstanceOf(Second); // Result should be a Second instance
         expect(result.time).toBe(90); // 30s - (-60s) = 90s
@@ -100,7 +126,86 @@ describe("Subtract", () => {
 });
 
 //////////////////////////
-// Round, Floor, and Ceil
+// Mul
+
+describe("Mul", () => {
+    it("should multiply a time by a factor and return the correct result", () => {
+        const time = new Second(30); // 30 seconds
+        const result = time.mul(2);
+        expect(time).toBe(result); // mul should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(60); // 30s * 2 = 60s
+    });
+
+    it("should multiply a time by a factor with a negative value and return the correct result", () => {
+        const time = new Second(30); // 30 seconds
+        const result = time.mul(-2);
+        expect(time).toBe(result); // mul should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(-60); // 30s * -2 = -60s
+    });
+
+    it("should multiply a time by a factor with a decimal value and return the correct result", () => {
+        const time = new Second(30); // 30 seconds
+        const result = time.mul(0.5);
+        expect(time).toBe(result); // mul should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(15); // 30s * 0.5 = 15s
+    });
+});
+
+//////////////////////////
+// Div
+
+describe("Div", () => {
+    it("should divide a time by a factor and return the correct result", () => {
+        const time = new Second(30); // 30 seconds
+        const result = time.div(2);
+        expect(time).toBe(result); // div should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(15); // 30s / 2 = 15s
+    });
+
+    it("should divide a time by a factor with a negative value and return the correct result", () => {
+        const time = new Second(30); // 30 seconds
+        const result = time.div(-2);
+        expect(time).toBe(result); // div should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(-15); // 30s / -2 = -15s
+    });
+
+    it("should divide a time by a factor with a decimal value and return the correct result", () => {
+        const time = new Second(30); // 30 seconds
+        const result = time.div(0.5);
+        expect(time).toBe(result); // div should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(60); // 30s / 0.5 = 60s
+    });
+});
+
+//////////////////////////
+// Mod
+
+describe("Mod", () => {
+    it("should return the remainder of a time divided by a factor", () => {
+        const time = new Second(30); // 30 seconds
+        const result = time.mod(7);
+        expect(time).toBe(result); // mod should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(2); // 30s % 7 = 2s
+    });
+
+    it("should return the remainder of a time divided by a factor with a negative value", () => {
+        const time = new Second(30); // 30 seconds
+        const result = time.mod(-7);
+        expect(time).toBe(result); // mod should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(2); // 30s % -7 = 2s
+    });
+});
+
+//////////////////////////
+// Round, Floor, Ceil and Trunc
 
 describe("Round, Floor, and Ceil", () => {
     it("should round a time to the nearest integer", () => {
@@ -134,6 +239,22 @@ describe("Round, Floor, and Ceil", () => {
         expect(result).toBeInstanceOf(Second);
         expect(result.time).toBe(31); // 30.5s rounded up to the nearest second is 31s
     });
+
+    it("should truncate a time to the integer part", () => {
+        const time = new Second(30.5); // 30.5 seconds
+        const result = time.trunc();
+        expect(time).toBe(result); // trunc should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(30); // 30.5s truncated to the integer part is 30s
+    });
+
+    it("should truncate a time with a negative value to the integer part", () => {
+        const time = new Second(-30.5); // -30.5 seconds
+        const result = time.trunc();
+        expect(time).toBe(result); // trunc should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(-30); // -30.5s truncated to the integer part is -30s
+    });
 });
 
 //////////////////////////
@@ -154,6 +275,70 @@ describe("Abs", () => {
         expect(time).toBe(result); // abs should modify the original instance
         expect(result).toBeInstanceOf(Second); // Result should be a Second instance
         expect(result.time).toBe(30); // |30s| = 30s
+    });
+});
+
+//////////////////////////
+// Negate
+
+describe("Negate", () => {
+    it("should return the negation of a time with a positive value", () => {
+        const time = new Second(30); // 30 seconds
+        const result = time.negate();
+        expect(time).toBe(result); // negate should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instnce
+        expect(result.time).toBe(-30); // -30s is the negation of 30s
+    });
+
+    it("should return the negation of a time with a negative value", () => {
+        const time = new Second(-30); // -30 seconds
+        const result = time.negate();
+        expect(time).toBe(result); // negate should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instnce
+        expect(result.time).toBe(30); // 30s is the negation of -30s
+    });
+
+    it("should return the negation of a time with a zero value", () => {
+        const time = new Second(0); // 0 seconds
+        const result = time.negate();
+        expect(time).toBe(result); // negate should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instnce
+        expect(result.time === 0).toBeTruthy(); // 0s is the negation of 0s
+    });
+});
+
+//////////////////////////
+// Clamp
+
+describe("Clamp", () => {
+    it("should clamp a time within a range", () => {
+        const time = new Second(30); // 30 seconds
+        const min = new Second(10); // 10 seconds
+        const max = new Second(60); // 60 seconds
+        const result = time.clamp(min, max);
+        expect(time).toBe(result); // clamp should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(30); // 30s is within the range of 10s and 60s, so it should remain unchanged
+    });
+
+    it("should clamp a time below the minimum value to the minimum value", () => {
+        const time = new Second(5); // 5 seconds
+        const min = new Second(10); // 10 seconds
+        const max = new Second(60); // 60 seconds
+        const result = time.clamp(min, max);
+        expect(time).toBe(result); // clamp should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(10); // 5s is below the minimum value of 10s, so it should be clamped to 10s
+    });
+
+    it("should clamp a time above the maximum value to the maximum value", () => {
+        const time = new Second(70); // 70 seconds
+        const min = new Second(10); // 10 seconds
+        const max = new Second(60); // 60 seconds
+        const result = time.clamp(min, max);
+        expect(time).toBe(result); // clamp should modify the original instance
+        expect(result).toBeInstanceOf(Second); // Result should be a Second instance
+        expect(result.time).toBe(60); // 70s is above the maximum value of 60s, so it should be clamped to 60s
     });
 });
 
@@ -272,5 +457,33 @@ describe("toString & toStringWithUnit", () => {
     it("should return the time value with unit as a string (Millisecond)", () => {
         const time = new Millisecond(30_000); // 30,000 milliseconds
         expect(time.toStringWithUnit()).toBe("30000ms"); // Time value with unit as string should be "30000ms"
+    });
+});
+
+//////////////////////////
+// min & max
+
+describe("min & max", () => {
+    it("should return null if no times are given", () => {
+        expect(Time.min()).toBeNull();
+        expect(Time.max()).toBeNull();
+    });
+
+    it("should return the minimum time among the given times", () => {
+        const time1 = new Second(30); // 30 seconds
+        const time2 = new Minute(1); // 60 seconds
+        const time3 = new Millisecond(15_000); // 15 seconds
+        const result = Time.min(time1, time2, time3);
+        expect(result).not.toBeNull(); // Result should not be null
+        expect(result).toBe(time3); // Minimum time should be 15 seconds
+    });
+
+    it("should return the maximum time among the given times", () => {
+        const time1 = new Second(30); // 30 seconds
+        const time2 = new Minute(1); // 60 seconds
+        const time3 = new Millisecond(15_000); // 15 seconds
+        const result = Time.max(time1, time2, time3);
+        expect(result).not.toBeNull(); // Result should not be null
+        expect(result).toBe(time2); // Maximum time should be 1 minute
     });
 });

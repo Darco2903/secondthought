@@ -26,6 +26,27 @@ export abstract class Time {
     }
 
     /**
+     * Returns whether this time is zero.
+     */
+    get isZero(): boolean {
+        return this._time === 0;
+    }
+
+    /**
+     * Returns whether this time is positive, negative, or zero.
+     */
+    get isPositive(): boolean {
+        return this._time > 0;
+    }
+
+    /**
+     * Returns whether this time is negative.
+     */
+    get isNegative(): boolean {
+        return this._time < 0;
+    }
+
+    /**
      * Creates a new time with the given time value in the unit of this time.
      * @param time The time value in the unit of this time.
      */
@@ -125,6 +146,7 @@ export abstract class Time {
 
     /**
      * Adds the other time to this time, converting it to the same unit if necessary.
+     * This method mutates this time and returns it for chaining.
      * @param other The time to add to this time.
      */
     public add(other: Time): this {
@@ -133,7 +155,48 @@ export abstract class Time {
     }
 
     /**
+     * Subtracts the other time from this time, converting it to the same unit if necessary.
+     * This method mutates this time and returns it for chaining.
+     * @param other The time to subtract from this time.
+     */
+    public sub(other: Time): this {
+        this._time -= other.toLike(this).time;
+        return this;
+    }
+
+    /**
+     * Multiplies this time by the given factor.
+     * This method mutates this time and returns it for chaining.
+     * @param factor The factor to multiply this time by.
+     */
+    public mul(factor: number): this {
+        this._time *= factor;
+        return this;
+    }
+
+    /**
+     * Divides this time by the given factor.
+     * This method mutates this time and returns it for chaining.
+     * @param factor The factor to divide this time by.
+     */
+    public div(factor: number): this {
+        this._time /= factor;
+        return this;
+    }
+
+    /**
+     * Returns the remainder of this time divided by the given factor.
+     * This method mutates this time and returns it for chaining.
+     * @param factor The factor to divide this time by.
+     */
+    public mod(factor: number): this {
+        this._time %= factor;
+        return this;
+    }
+
+    /**
      * Rounds the time value to the nearest integer.
+     * This method mutates this time and returns it for chaining.
      */
     public round(): this {
         this._time = Math.round(this._time);
@@ -142,6 +205,7 @@ export abstract class Time {
 
     /**
      * Rounds the time value down to the nearest integer.
+     * This method mutates this time and returns it for chaining.
      */
     public floor(): this {
         this._time = Math.floor(this._time);
@@ -150,6 +214,7 @@ export abstract class Time {
 
     /**
      * Rounds the time value up to the nearest integer.
+     * This method mutates this time and returns it for chaining.
      */
     public ceil(): this {
         this._time = Math.ceil(this._time);
@@ -157,16 +222,17 @@ export abstract class Time {
     }
 
     /**
-     * Subtracts the other time from this time, converting it to the same unit if necessary.
-     * @param other The time to subtract from this time.
+     * Truncates the time value to an integer by removing any fractional digits.
+     * This method mutates this time and returns it for chaining.
      */
-    public subtract(other: Time): this {
-        this._time -= other.toLike(this).time;
+    public trunc(): this {
+        this._time = Math.trunc(this._time);
         return this;
     }
 
     /**
      * Returns the absolute value of this time.
+     * This method mutates this time and returns it for chaining.
      */
     public abs(): this {
         if (this._time < 0) {
@@ -176,7 +242,35 @@ export abstract class Time {
     }
 
     /**
+     * Negates this time.
+     * This method mutates this time and returns it for chaining.
+     */
+    public negate(): this {
+        this._time = -this._time;
+        return this;
+    }
+
+    /**
+     * Clamps this time between the given minimum and maximum times, converting them to the same unit if necessary.
+     * This method mutates this time and returns it for chaining.
+     * @param min The minimum time to clamp this time to.
+     * @param max The maximum time to clamp this time to.
+     */
+    public clamp(min: Time, max: Time): this {
+        const minTime = min.toLike(this).time;
+        const maxTime = max.toLike(this).time;
+
+        if (this._time < minTime) {
+            this._time = minTime;
+        } else if (this._time > maxTime) {
+            this._time = maxTime;
+        }
+        return this;
+    }
+
+    /**
      * Returns the absolute difference between this time and the other time, converting it to the same unit if necessary.
+     * This method returns a new time in the same unit as this.
      * @param other The time to compare to this time.
      */
     public diff(other: Nanosecond): Nanosecond;
@@ -188,7 +282,7 @@ export abstract class Time {
     public diff(other: Day): Day;
     public diff(other: Time): Time;
     public diff(other: Time): Time {
-        return this.clone().subtract(other.toLike(this)).abs();
+        return this.clone().sub(other.toLike(this)).abs();
     }
 
     /**
@@ -253,5 +347,43 @@ export abstract class Time {
      */
     public toStringWithUnit(): string {
         return this.toString() + this.getUnit();
+    }
+
+    /**
+     * Returns the minimum time among the given times, converting them to the same unit if necessary.
+     * @param times The times to compare.
+     * @return The minimum time among the given times, or null if no times are given.
+     */
+    public static min(...times: Time[]): Time | null {
+        if (times.length === 0) {
+            return null;
+        }
+
+        let minTime = times[0];
+        for (let i = 1; i < times.length; i++) {
+            if (times[i].lessThan(minTime)) {
+                minTime = times[i];
+            }
+        }
+        return minTime;
+    }
+
+    /**
+     * Returns the maximum time among the given times, converting them to the same unit if necessary.
+     * @param times The times to compare.
+     * @return The maximum time among the given times, or null if no times are given.
+     */
+    public static max(...times: Time[]): Time | null {
+        if (times.length === 0) {
+            return null;
+        }
+
+        let maxTime = times[0];
+        for (let i = 1; i < times.length; i++) {
+            if (times[i].greaterThan(maxTime)) {
+                maxTime = times[i];
+            }
+        }
+        return maxTime;
     }
 }
