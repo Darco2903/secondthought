@@ -9,7 +9,8 @@ SecondThought is a TypeScript library that provides typed time units to help pre
 - Typed time units to prevent unit-related errors (Nanosecond, Microsecond, Millisecond, Second, Minute, Hour, Day, Week)
 - Safe conversions between time units
 - Methods for common time operations (addition, subtraction, etc.)
-- Support for current time and elapsed time calculations
+- Comparison methods for time values
+- Support for current time, elapsed time calculations and conversion from/to Date objects
 
 ## Installation
 
@@ -32,15 +33,38 @@ const totalTime = time1.add(time2).add(time3).toMillisecond();
 console.log(`Total time in milliseconds: ${totalTime.toStringWithUnit()}`); // Total time in milliseconds: 3750000ms
 ```
 
+### Mutation
+
+Operations that mutate the instance will change the value of the instance and return the same instance.
+To find out if a method mutates the instance, you can check its documentation.
+
+```ts
+import { Minute, Second } from "@darco2903/secondthought";
+
+const sec = new Second(90);
+const result = sec.sub(new Minute(1)); // sub is a mutating operation
+console.log(sec.time, result.time, sec === result); // 30 30 true
+```
+
+To avoid mutating the original instance, you can use the `clone` method to create a copy of the instance before performing an operation that mutates it.
+
+```ts
+import { Minute, Second } from "@darco2903/secondthought";
+
+const sec = new Second(90);
+const result = sec.clone().sub(new Minute(1));
+console.log(sec.time, result.time, sec === result); // 90 30 false
+```
+
 ### Current Time and Elapsed Time
 
 ```ts
 import { Millisecond } from "@darco2903/secondthought";
 
-const now = Millisecond.now();
+const start = Millisecond.now();
 
-// time passed since now
-const elapsed = now.diff(Millisecond.now());
+// time passed since start
+const elapsed = start.diff(Millisecond.now());
 const elapsedSeconds = elapsed.toSecond(); // Convert to seconds
 ```
 
@@ -49,8 +73,6 @@ const elapsedSeconds = elapsed.toSecond(); // Convert to seconds
 ```ts
 import { Millisecond, Second, Time } from "@darco2903/secondthought";
 
-// A function that accepts only Millisecond time units
-
 function waitMs(ms: Millisecond) {
     return new Promise((resolve) => setTimeout(resolve, ms.time));
 }
@@ -58,8 +80,12 @@ function waitMs(ms: Millisecond) {
 await waitMs(new Millisecond(1000)); // correct
 await waitMs(new Second(1)); // Error: Second is not assignable to Millisecond
 await waitMs(new Second(1).toMillisecond()); // correct
+```
 
-// To allow all time units to be used, we can define a more general function that accepts any Time implementation:
+To allow all time units to be used, we can define a more general function that accepts any Time implementation:
+
+```ts
+import { type Time, Second, Millisecond } from "@darco2903/secondthought";
 
 function wait(time: Time) {
     return new Promise((resolve) => setTimeout(resolve, time.toMillisecond().time));
@@ -67,4 +93,40 @@ function wait(time: Time) {
 
 await wait(new Millisecond(1000)); // correct
 await wait(new Second(1)); // also correct
+```
+
+### Other Methods
+
+This is a non-exhaustive list of other methods available in the library.
+
+```ts
+import { Millisecond, Minute, Second } from "@darco2903/secondthought";
+
+const ms = new Millisecond(200);
+ms.getUnit(); // "ms"
+const sec = new Second(90);
+sec.getUnit(); // "s"
+
+new Second(3.22).ceil().time; // 4
+new Second(3.77).floor().time; // 3
+new Second(3.1).round().time; // 3
+new Second(3.5).round().time; // 4
+
+new Second(100).clamp(new Second(10), new Minute(1)).time; // 60
+
+new Second(-3).abs().time; // 3
+new Second(3).negate().time; // -3
+
+sec.toString(); // "90"
+sec.toStringWithUnit(); // "90s"
+
+// comparison methods
+const sec = new Second(1);
+const min = new Minute(1);
+sec.equals(min); // false
+sec.notEquals(min); // true
+sec.greaterThan(min); // false
+sec.lessThan(min); // true
+sec.greaterThanOrEqual(min); // false
+sec.lessThanOrEqual(min); // true
 ```
