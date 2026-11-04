@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Millisecond } from "../../src";
+import { Millisecond } from "../../src/index.js";
 
 //////////////////////////
 // Date tests

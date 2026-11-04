@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Day, Hour, Microsecond, Millisecond, Minute, Nanosecond, Second, Week } from "../../../src";
+import { Day, Hour, Microsecond, Millisecond, Minute, Nanosecond, Second, Week } from "../../../src/index.js";
 
 //////////////////////////
 // Hour

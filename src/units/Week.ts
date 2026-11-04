@@ -9,7 +9,7 @@ import { Hour } from "./Hour.js";
 import { Day } from "./Day.js";
 
 export class Week extends Time {
-    private readonly __brand!: "Week";
+    private declare readonly __brand: "Week";
 
     constructor(time: number) {
         super(time);

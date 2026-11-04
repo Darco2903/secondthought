@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Hour, Millisecond, Minute, Second, Time } from "../../src";
+import { Hour, Millisecond, Minute, Second, Time } from "../../src/index.js";
 
 //////////////////////////
 // isZero, isPositive, isNegative

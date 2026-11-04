@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { Hour, Week, Nanosecond } from "../../src";
+import { Hour, Week, Nanosecond } from "../../src/index.js";
 
 //////////////////////////
 // Big Number Operations
