@@ -8,6 +8,30 @@ import type { Hour } from "./Hour.js";
 import type { Day } from "./Day.js";
 import type { Week } from "./Week.js";
 
+/**
+ * Formats a number like `String(value)` (shortest round-trip digits, locale independent)
+ * but expands exponent notation, e.g. `1.8144e+22` -> `"18144000000000000000000"`.
+ */
+function toPlainString(value: number): string {
+    const str = String(value);
+    const match = /^(-?)(\d+)(?:\.(\d+))?e([+-]\d+)$/.exec(str);
+    if (!match) {
+        return str;
+    }
+
+    const [, sign, int, frac = "", exp] = match;
+    const digits = int + frac;
+    const point = int.length + Number(exp);
+
+    if (point <= 0) {
+        return sign + "0." + "0".repeat(-point) + digits;
+    }
+    if (point >= digits.length) {
+        return sign + digits + "0".repeat(point - digits.length);
+    }
+    return sign + digits.slice(0, point) + "." + digits.slice(point);
+}
+
 export abstract class Time {
     protected _time: number;
 
@@ -273,16 +297,8 @@ export abstract class Time {
      * This method returns a new time in the same unit as this.
      * @param other The time to compare to this time.
      */
-    public diff(other: Nanosecond): Nanosecond;
-    public diff(other: Microsecond): Microsecond;
-    public diff(other: Millisecond): Millisecond;
-    public diff(other: Second): Second;
-    public diff(other: Minute): Minute;
-    public diff(other: Hour): Hour;
-    public diff(other: Day): Day;
-    public diff(other: Time): Time;
-    public diff(other: Time): Time {
-        return this.clone().sub(other.toLike(this)).abs();
+    public diff(other: Time): this {
+        return (this.clone() as this).sub(other).abs();
     }
 
     /**
@@ -334,16 +350,14 @@ export abstract class Time {
     }
 
     /**
-     * Returns the time value in the unit of this time.
-     * @param other The time to compare to this time.
+     * Returns the time value in the unit of this time, without exponent notation and independent of locale.
      */
     public toString(): string {
-        return this.time.toLocaleString("fullwide", { useGrouping: false });
+        return toPlainString(this._time);
     }
 
     /**
      * Returns the time value in the unit of this time, followed by the unit of this time.
-     * @param other The time to compare to this time.
      */
     public toStringWithUnit(): string {
         return this.toString() + this.getUnit();
@@ -354,6 +368,8 @@ export abstract class Time {
      * @param times The times to compare.
      * @return The minimum time among the given times, or null if no times are given.
      */
+    public static min<T extends [Time, ...Time[]]>(...times: T): T[number];
+    public static min<T extends Time[]>(...times: T): T[number] | null;
     public static min(...times: Time[]): Time | null {
         if (times.length === 0) {
             return null;
@@ -373,6 +389,8 @@ export abstract class Time {
      * @param times The times to compare.
      * @return The maximum time among the given times, or null if no times are given.
      */
+    public static max<T extends [Time, ...Time[]]>(...times: T): T[number];
+    public static max<T extends Time[]>(...times: T): T[number] | null;
     public static max(...times: Time[]): Time | null {
         if (times.length === 0) {
             return null;

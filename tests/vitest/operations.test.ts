@@ -1,5 +1,5 @@
-import { describe, it, expect } from "vitest";
-import { Hour, Millisecond, Minute, Second, Time } from "../../src/index.js";
+import { describe, it, expect, vi } from "vitest";
+import { Hour, Millisecond, Minute, Nanosecond, Second, Time } from "../../src/index.js";
 
 //////////////////////////
 // isZero, isPositive, isNegative
@@ -373,6 +373,15 @@ describe("Diff", () => {
         const result = time1.diff(time2).toSecond();
         expect(result.time).toBe(90); // |30s - (-60s)| = 90s
     });
+
+    it("should return the difference in the unit of this time without mutating it", () => {
+        const time1 = new Second(5); // 5 seconds
+        const time2 = new Millisecond(1); // 1 millisecond
+        const result = time1.diff(time2);
+        expect(result).toBeInstanceOf(Second);
+        expect(result.time).toBe(4.999); // |5s - 0.001s| = 4.999s
+        expect(time1.time).toBe(5); // time1 should not be mutated
+    });
 });
 
 //////////////////////////
@@ -458,6 +467,28 @@ describe("toString & toStringWithUnit", () => {
         const time = new Millisecond(30_000); // 30,000 milliseconds
         expect(time.toStringWithUnit()).toBe("30000ms"); // Time value with unit as string should be "30000ms"
     });
+
+    it("should keep full precision for fractional values", () => {
+        expect(new Second(1.23456).toString()).toBe("1.23456");
+        expect(new Second(1 / 3).toString()).toBe(String(1 / 3));
+        expect(new Second(-0.5).toString()).toBe("-0.5");
+    });
+
+    it("should not use exponent notation", () => {
+        expect(new Second(1e-7).toString()).toBe("0.0000001");
+        expect(new Second(-1.5e-8).toString()).toBe("-0.000000015");
+        expect(new Nanosecond(1.8144e22).toString()).toBe("18144000000000000000000");
+        expect(new Nanosecond(-2.5e21).toString()).toBe("-2500000000000000000000");
+    });
+
+    it("should not depend on locale", () => {
+        const spy = vi.spyOn(Number.prototype, "toLocaleString").mockReturnValue("1,5");
+        try {
+            expect(new Second(1.5).toString()).toBe("1.5");
+        } finally {
+            spy.mockRestore();
+        }
+    });
 });
 
 //////////////////////////
@@ -485,5 +516,12 @@ describe("min & max", () => {
         const result = Time.max(time1, time2, time3);
         expect(result).not.toBeNull(); // Result should not be null
         expect(result).toBe(time2); // Maximum time should be 1 minute
+    });
+
+    it("should return the first of equal times", () => {
+        const time1 = new Second(60); // 60 seconds
+        const time2 = new Minute(1); // 60 seconds
+        expect(Time.min(time1, time2)).toBe(time1);
+        expect(Time.max(time1, time2)).toBe(time1);
     });
 });
