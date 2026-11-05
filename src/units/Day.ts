@@ -27,7 +27,7 @@ export class Day extends Time {
         return new Nanosecond(this.time * 86_400_000_000_000);
     }
 
-    toMicrosecond() {
+    toMicrosecond(): Microsecond {
         return new Microsecond(this.time * 86_400_000_000);
     }
 

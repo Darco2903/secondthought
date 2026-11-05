@@ -27,7 +27,7 @@ export class Nanosecond extends Time {
         return new Nanosecond(this.time);
     }
 
-    toMicrosecond() {
+    toMicrosecond(): Microsecond {
         return new Microsecond(this.time / 1_000);
     }
 

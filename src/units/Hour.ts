@@ -27,7 +27,7 @@ export class Hour extends Time {
         return new Nanosecond(this.time * 3_600_000_000_000);
     }
 
-    toMicrosecond() {
+    toMicrosecond(): Microsecond {
         return new Microsecond(this.time * 3_600_000_000);
     }
 

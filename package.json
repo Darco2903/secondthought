@@ -2,8 +2,18 @@
     "name": "@darco2903/secondthought",
     "version": "1.4.0",
     "author": "Darco2903",
-    "description": "",
-    "keywords": [],
+    "description": "Typed time units (ns to weeks) for TypeScript that prevent mixing up seconds, milliseconds and other units.",
+    "keywords": [
+        "time",
+        "duration",
+        "units",
+        "typed",
+        "typescript",
+        "milliseconds",
+        "seconds",
+        "conversion",
+        "type-safe"
+    ],
     "license": "MIT",
     "main": "dist/index.js",
     "types": "dist/index.d.ts",
@@ -14,6 +24,7 @@
             "default": "./dist/index.js"
         }
     },
+    "sideEffects": false,
     "files": [
         "dist"
     ],
@@ -27,13 +38,13 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/Darco2903/secondthought.git"
+        "url": "git+https://github.com/Darco2903/secondthought.git"
     },
     "publishConfig": {
         "access": "public"
     },
     "scripts": {
-        "build": "tsc",
+        "build": "rimraf dist && tsc",
         "check": "tsc --noEmit && tsc -p tests",
         "test": "vitest run",
         "test:ui": "vitest --ui",

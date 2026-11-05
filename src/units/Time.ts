@@ -57,7 +57,7 @@ export abstract class Time {
     }
 
     /**
-     * Returns whether this time is positive, negative, or zero.
+     * Returns whether this time is positive (greater than zero).
      */
     get isPositive(): boolean {
         return this._time > 0;
@@ -295,7 +295,7 @@ export abstract class Time {
     /**
      * Returns the absolute difference between this time and the other time, converting it to the same unit if necessary.
      * This method returns a new time in the same unit as this.
-     * @param other The time to compare to this time.
+     * @param other The time to subtract from this time.
      */
     public diff(other: Time): this {
         return (this.clone() as this).sub(other).abs();
@@ -366,6 +366,7 @@ export abstract class Time {
     /**
      * Returns the minimum time among the given times, converting them to the same unit if necessary.
      * @param times The times to compare.
+     * The returned value is one of the given instances, not a copy: use `clone` before mutating it.
      * @return The minimum time among the given times, or null if no times are given.
      */
     public static min<T extends [Time, ...Time[]]>(...times: T): T[number];
@@ -387,6 +388,7 @@ export abstract class Time {
     /**
      * Returns the maximum time among the given times, converting them to the same unit if necessary.
      * @param times The times to compare.
+     * The returned value is one of the given instances, not a copy: use `clone` before mutating it.
      * @return The maximum time among the given times, or null if no times are given.
      */
     public static max<T extends [Time, ...Time[]]>(...times: T): T[number];

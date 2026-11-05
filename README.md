@@ -121,12 +121,12 @@ sec.toString(); // "90"
 sec.toStringWithUnit(); // "90s"
 
 // comparison methods
-const sec = new Second(1);
-const min = new Minute(1);
-sec.equals(min); // false
-sec.notEquals(min); // true
-sec.greaterThan(min); // false
-sec.lessThan(min); // true
-sec.greaterThanOrEqual(min); // false
-sec.lessThanOrEqual(min); // true
+const oneSec = new Second(1);
+const oneMin = new Minute(1);
+oneSec.equals(oneMin); // false
+oneSec.notEquals(oneMin); // true
+oneSec.greaterThan(oneMin); // false
+oneSec.lessThan(oneMin); // true
+oneSec.greaterThanOrEqual(oneMin); // false
+oneSec.lessThanOrEqual(oneMin); // true
 ```
