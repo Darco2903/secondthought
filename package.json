@@ -1,6 +1,6 @@
 {
     "name": "@darco2903/secondthought",
-    "version": "1.4.0",
+    "version": "1.4.1",
     "author": "Darco2903",
     "description": "Typed time units (ns to weeks) for TypeScript that prevent mixing up seconds, milliseconds and other units.",
     "keywords": [
